@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import { GlobalStyles } from "./components/Global.styles";
+import NavBar from "./components/layout/NavBar";
+import AddNote from "./components/notes/AddNote";
+import Notes from "./components/notes/Notes";
+import { NotesProvider } from "./components/notes/NotesContext";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <NotesProvider>
+      <GlobalStyles />
+      <div>
+        <NavBar />
+        <AddNote />
+        <Notes />
+      </div>
+    </NotesProvider>
   );
 }
 
