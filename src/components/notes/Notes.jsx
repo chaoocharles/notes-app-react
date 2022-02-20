@@ -1,7 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Note from "./Note";
 import { NotesContext } from "./NotesContext";
+import axios from "axios";
+import { url } from "./url";
 
 const StyledNotes = styled.div`
   display: flex;
@@ -11,10 +13,29 @@ const StyledNotes = styled.div`
 
 const Notes = () => {
   const [notes, setNotes] = useContext(NotesContext);
+  const [isLoading, setLoading] = useState(false);
+
+  console.log(notes);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(url + "/api/notes");
+      setLoading(false);
+      setNotes(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <StyledNotes>
-      {notes && notes.map((note) => <Note ourNote={note} key={note.id} />)}
+      {isLoading ? <p>Loading...</p> : null}
+      {notes && notes.map((note) => <Note ourNote={note} key={note._id} />)}
     </StyledNotes>
   );
 };
