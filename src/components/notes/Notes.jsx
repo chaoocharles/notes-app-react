@@ -12,10 +12,11 @@ const StyledNotes = styled.div`
 `;
 
 const Notes = () => {
-  const [notes, setNotes] = useContext(NotesContext);
-  const [isLoading, setLoading] = useState(false);
+  const { notesState } = useContext(NotesContext);
 
-  console.log(notes);
+  const [notes, setNotes] = notesState;
+
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();

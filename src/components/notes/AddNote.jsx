@@ -12,7 +12,7 @@ const FormContainer = styled.div`
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  width: 100%auto;
+  width: 100%;
   input,
   textarea {
     border: 2px solid cyan;
@@ -32,30 +32,54 @@ const StyledForm = styled.form`
 `;
 
 const AddNote = () => {
-  const [title, setTitle] = useState("");
-  const [desc, setDesc] = useState("");
+  const { notesState, currentNoteState } = useContext(NotesContext);
 
-  const [notes, setNotes] = useContext(NotesContext);
+  const [notes, setNotes] = notesState;
+  const [currentNote, setCurrentNote] = currentNoteState;
+
+  console.log(currentNote);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      const res = await axios.post(url + "/api/notes", {
-        title: title,
-        desc: desc,
+    if (currentNote._id) {
+      // update
+      const res = await axios.put(
+        url + `/api/notes/${currentNote._id}`,
+        currentNote
+      );
+
+      console.log(res.data);
+
+      const updatedNotes = notes.map((note) =>
+        note._id === res.data._id ? res.data : note
+      );
+
+      setNotes(updatedNotes);
+
+      setCurrentNote({
+        title: "",
+        desc: "",
+        _id: "",
       });
+    } else {
+      try {
+        const res = await axios.post(url + "/api/notes", currentNote);
 
-      setNotes((prevNotes) => [
-        ...prevNotes,
-        { title: res.data.title, desc: res.data.desc, _id: res.data._id },
-      ]);
-    } catch (err) {
-      console.log(err);
+        setNotes((prevNotes) => [
+          ...prevNotes,
+          { title: res.data.title, desc: res.data.desc, _id: res.data._id },
+        ]);
+      } catch (err) {
+        console.log(err);
+      }
+
+      setCurrentNote({
+        title: "",
+        desc: "",
+        _id: "",
+      });
     }
-
-    setTitle("");
-    setDesc("");
   };
 
   return (
@@ -65,18 +89,33 @@ const AddNote = () => {
           type="text"
           placeholder="Title"
           required
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={currentNote.title}
+          onChange={(e) =>
+            setCurrentNote({ ...currentNote, title: e.target.value })
+          }
         />
         <textarea
           type="text"
           placeholder="Description"
           required
-          value={desc}
-          onChange={(e) => setDesc(e.target.value)}
+          value={currentNote.desc}
+          onChange={(e) =>
+            setCurrentNote({ ...currentNote, desc: e.target.value })
+          }
         />
-        <button>Add Note</button>
+        <button>{currentNote._id ? "Update" : "Add Note"}</button> <br />
       </StyledForm>
+      <button
+        onClick={() =>
+          setCurrentNote({
+            title: "",
+            desc: "",
+            _id: "",
+          })
+        }
+      >
+        Clear
+      </button>
     </FormContainer>
   );
 };

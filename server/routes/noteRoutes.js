@@ -30,7 +30,7 @@ router.put("/:id", async (req, res) => {
 
   const { title, desc } = req.body;
 
-  const updatedNote = await Todo.findByIdAndUpdate(
+  const updatedNote = await Note.findByIdAndUpdate(
     req.params.id,
     { title, desc },
     { new: true }

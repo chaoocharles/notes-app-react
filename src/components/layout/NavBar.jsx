@@ -13,7 +13,9 @@ const StyledNav = styled.nav`
 `;
 
 const NavBar = () => {
-  const [notes, setNotes] = useContext(NotesContext);
+  const { notesState } = useContext(NotesContext);
+
+  const [notes, setNotes] = notesState;
 
   return (
     <StyledNav>

@@ -25,7 +25,10 @@ const StyledButton = styled.button`
 `;
 
 const Note = ({ ourNote }) => {
-  const [notes, setNotes] = useContext(NotesContext);
+  const { notesState, currentNoteState } = useContext(NotesContext);
+
+  const [notes, setNotes] = notesState;
+  const [currentNote, setCurrentNote] = currentNoteState;
 
   const handleDelete = async (_id) => {
     console.log(_id);
@@ -43,7 +46,7 @@ const Note = ({ ourNote }) => {
   };
 
   const handleUpdate = (note) => {
-    console.log(note._id);
+    setCurrentNote(note);
   };
 
   return (
